@@ -37,7 +37,7 @@ if(dir==CCW)
 void StepperDriver::execute(float *vel){
     float velocity = fabs(*vel);
     numStep = (velocity) * float(motor_step/wheel_circumference);
-    stepDelay= (1/numStep)*1000000L;
+    stepDelay= (1/numStep)*500000L;
     curr_micros=micros();
     if(curr_micros - prev_micros >= stepDelay && stepDelay !=0 ){ ////If the difference in time is greater then said step delay then send a step signal for Right
       if(step < numStep)
@@ -51,6 +51,8 @@ void StepperDriver::execute(float *vel){
         numStep=0;
         step=0;
         *vel = 0;
+        doneMove=1;
+        
       }
               
     }

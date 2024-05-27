@@ -16,12 +16,13 @@
 // Target RPM for Y axis motor
 #define MOTOR_Y_RPM 200
 
-#define L 12 //Distance between the 2 wheels
-#define MINIMUM_SPEED 1 //minimum speed in cm/s 
-#define MAXIMUM_SPEED 44 //minimum speed in cm/s
+#define L 13.5 //Distance between the 2 wheels
+#define MINIMUM_SPEED 2 //minimum speed in cm/s 
+#define MAXIMUM_SPEED 20 //minimum speed in cm/s
 // #define MINIMUM_SPEED 30 //minimum speed in cm/s 
 // #define MAXIMUM_SPEED 100 //minimum speed in cm/s
-
+#define SENSOR_BATTERY A1
+#define LED_DONE_BOOT 13  
 // X motor
 #define DIR_X 5
 #define STEP_X 2
@@ -39,7 +40,8 @@
 // 2-wire basic config, microstepping is hardwired on the driver
 // Other drivers can be mixed and matched but must be configured individually
 
-
+long timerBothMotors=0;
+bool showTimer = 0;
 static StepperDriver motorR(DIR_X,STEP_X,EN_M,MOTOR_STEP);
 static StepperDriver motorL(DIR_Y,STEP_Y,EN_M,MOTOR_STEP);
 
@@ -114,6 +116,12 @@ int runCommand() {
   case PING:
     Serial.println("OK");
     break;
+  case BATTERY_STATS:
+    // float sensorValue = analogRead(SENSOR_BATTERY);
+  //   double Battery = map(sensorValue, 453, 514, 0, 100);  // 100% battery
+  //   Serial.println(Battery);
+    Serial.println(analogRead(SENSOR_BATTERY)); 
+    break;
   case SERVO_WRITE:
   //   servos[arg1].setTargetPosition(arg2);
     Serial.println("OK");
@@ -164,6 +172,10 @@ int runCommand() {
     }
     else
     speedL=atof(argv2);
+    // motorR.doneMove = 0;
+    // motorL.doneMove = 0;
+    // showTimer = 1;
+    // timerBothMotors = micros();
     // Serial.print("speedR:  ");Serial.print(speedR);Serial.print(" ,speedL:  ");Serial.println(speedL);
     Serial.println("OK"); 
     break;
@@ -227,7 +239,10 @@ int runCommand() {
       else
       speedL=MAXIMUM_SPEED;
     }
-
+    // motorR.doneMove = 0;
+    // motorL.doneMove = 0;
+    // showTimer = 1;
+    // timerBothMotors = micros();
     // Serial.print("speedR:  ");Serial.print(speedR);Serial.print(" ,speedL:  ");Serial.println(speedL);
     Serial.println("OK");
     break;
@@ -258,19 +273,35 @@ void setup() {
   motorL.begin();
   motorR.setDirection(StepperDriver::Direction::CCW);
   motorL.setDirection(StepperDriver::Direction::CW);
+  pinMode(LED_DONE_BOOT,OUTPUT);
+  digitalWrite(LED_DONE_BOOT,LOW);
   // timer = micros();
-  // for (int i =0 ; i <32*200 ; i++){
-  //   motorR.move();
-  //   delayMicroseconds(75);
+  // for (int i =0 ; i <2*200 ; i++){
+  //   digitalWrite(STEP_X,HIGH);
+  //   delayMicroseconds(1);
+  //   digitalWrite(STEP_X,LOW);
+  //   delayMicroseconds(1000);
   // }
   // Serial.print("time Motor R in us= ");Serial.println(micros()-timer); 
   // Serial.println("done move");
   // timer = micros();
   // for (int i =0 ; i <32*200 ; i++){
-  //   motorL.move();
-  //   delayMicroseconds(75);
+  //   digitalWrite(STEP_Y,HIGH);
+  //   delayMicroseconds(1);
+  //   digitalWrite(STEP_Y,LOW);
+  //   delayMicroseconds(750);
+    
   // }
   // Serial.print("time Motor L in us= ");Serial.println(micros()-timer); 
+  // Serial.println("done move");  
+  //  timer = micros();
+  // for (int i =0 ; i <32*200 ; i++){
+  //   digitalWrite(STEP_X,HIGH);digitalWrite(STEP_Y,HIGH);
+  //   delayMicroseconds(1);
+  //   digitalWrite(STEP_X,LOW);digitalWrite(STEP_Y,LOW);
+  //   delayMicroseconds(500);
+  // }
+  // Serial.print("time Motor RL in us= ");Serial.println(micros()-timer); 
   // Serial.println("done move");  
     
 }
@@ -315,10 +346,7 @@ void loop() {
         index++;
       }
     }
-    // digitalWrite(LED_BUILTIN, HIGH);
-    // delay(100);
-    // digitalWrite(LED_BUILTIN, LOW);
-    // delay(100);
+    
   }
   if(speedR >= 0 )
     {motorR.setDirection(StepperDriver::Direction::CCW);}
@@ -331,6 +359,14 @@ void loop() {
   
   motorR.execute(&speedR);
   motorL.execute(&speedL);
-  // speedR=0;
+  //  if(!motorL.doneMove && !motorR.doneMove&& showTimer){
+  // Serial.print("delay motor R (ms): ");Serial.println(micros()-motorR.prev_micros);
+  // }
+  // if((motorL.doneMove || motorR.doneMove)&& showTimer){
+  // Serial.print("Time (us): ");Serial.println(micros()-timerBothMotors);
+  // timerBothMotors = micros();
+  // timerBothMotors=0;
+  // showTimer=0;
+  // }// speedR=0;
   // speedL=0;
 }
