@@ -9,7 +9,7 @@
 #define GET_BAUDRATE   'b'
 #define PIN_MODE       'c'
 #define DIGITAL_READ   'd'
-#define READ_ENCODERS  'e'
+#define READ_MOTORSTEP 'e'
 #define DIRECTION      'f'
 #define BATTERY_STATS  'g'
 #define MOTOR_SPEEDS   'm'

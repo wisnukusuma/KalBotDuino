@@ -14,7 +14,7 @@ public:
     int motor_step;
     float wheel_circumference; //get by measure the circumference of the wheel 
     enum Direction {CW, CCW};
-    bool doneMove=1;
+    long accStep;
     unsigned int prev_micros;
     unsigned int curr_micros;
     StepperDriver(short dir, short step, short en, int mot_step)
@@ -38,7 +38,6 @@ public:
 protected:
     unsigned int step;
     float numStep;
-
     double stepDelay;
     
 };

@@ -129,10 +129,10 @@ int runCommand() {
   case SERVO_READ:
   //   Serial.println(servos[arg1].getServo().read());
     break;
-  case READ_ENCODERS:
-  //   Serial.print(readEncoder(LEFT));
-  //   Serial.print(" ");
-  //   Serial.println(readEncoder(RIGHT));
+  case READ_MOTORSTEP:
+    Serial.print(motorR.accStep);
+    Serial.print(" ");
+    Serial.println(motorL.accStep);
     break;
    case RESET_ENCODERS:
   //   resetEncoders();
@@ -172,8 +172,6 @@ int runCommand() {
     }
     else
     speedL=atof(argv2);
-    // motorR.doneMove = 0;
-    // motorL.doneMove = 0;
     // showTimer = 1;
     // timerBothMotors = micros();
     // Serial.print("speedR:  ");Serial.print(speedR);Serial.print(" ,speedL:  ");Serial.println(speedL);
@@ -359,14 +357,5 @@ void loop() {
   
   motorR.execute(&speedR);
   motorL.execute(&speedL);
-  //  if(!motorL.doneMove && !motorR.doneMove&& showTimer){
-  // Serial.print("delay motor R (ms): ");Serial.println(micros()-motorR.prev_micros);
-  // }
-  // if((motorL.doneMove || motorR.doneMove)&& showTimer){
-  // Serial.print("Time (us): ");Serial.println(micros()-timerBothMotors);
-  // timerBothMotors = micros();
-  // timerBothMotors=0;
-  // showTimer=0;
-  // }// speedR=0;
-  // speedL=0;
+
 }

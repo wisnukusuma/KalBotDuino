@@ -8,6 +8,7 @@
     curr_micros = 0;
     step = 0;
     wheel_circumference = 21.5;
+    accStep = 0;
     
 }
 
@@ -45,14 +46,16 @@ void StepperDriver::execute(float *vel){
         move();
         prev_micros = curr_micros;
         step++;
+        if(*vel < 0)
+        accStep++;
+        else
+        accStep--;
       }
       else if(step>=numStep){
         // Serial.println(stepDelay);
         numStep=0;
         step=0;
-        *vel = 0;
-        doneMove=1;
-        
+        // *vel = 0;
       }
               
     }
