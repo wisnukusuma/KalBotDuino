@@ -46,7 +46,7 @@ void StepperDriver::execute(float *vel){
         move();
         prev_micros = curr_micros;
         step++;
-        if(*vel < 0)
+        if(*vel > 0)
         accStep++;
         else
         accStep--;

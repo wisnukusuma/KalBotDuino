@@ -12,6 +12,7 @@
 #define READ_MOTORSTEP 'e'
 #define DIRECTION      'f'
 #define BATTERY_STATS  'g'
+#define READ_SONAR     'h' 
 #define MOTOR_SPEEDS   'm'
 #define MOTOR_RAW_PWM  'o'
 #define PING           'p'

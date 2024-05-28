@@ -1,6 +1,8 @@
 
 #include <Arduino.h>
+#include <HCSR04.h>
 
+HCSR04 hc(9, 10); //initialisation class HCSR04 (trig pin , echo pin)
 #include "Motor.h"
 
 /* Include definition of serial commands */
@@ -189,6 +191,9 @@ int runCommand() {
     motorL.setDirection(StepperDriver::Direction::CW);
     Serial.println("OK"); 
     break;
+  case READ_SONAR:
+    Serial.println(hc.dist());
+    break;
   case MOTOR_RAW_PWM:
     // Serial.println(micros()-timer);
     // timer = micros(); 
@@ -210,32 +215,35 @@ int runCommand() {
     vAng=atof(argv2);
     speedR=vLin+(vAng * L/2);
     speedL=vLin-(vAng * L/2);
-    if(fabs(speedR)<MINIMUM_SPEED)
-    { if(speedR<0)
-      speedR=-MINIMUM_SPEED;
-      else
-      speedR=MINIMUM_SPEED;
+    if(speedR != 0){
+      if(fabs(speedR)<MINIMUM_SPEED)
+      { if(speedR<0)
+        speedR=-MINIMUM_SPEED;
+        else
+        speedR=MINIMUM_SPEED;
+      }
+      else if(fabs(speedR)>MAXIMUM_SPEED)
+      {
+        if(speedR<0)
+        speedR=-MAXIMUM_SPEED;
+        else
+        speedR=MAXIMUM_SPEED;      
+      }
     }
-    else if(fabs(speedR)>MAXIMUM_SPEED)
-    {
-      if(speedR<0)
-      speedR=-MAXIMUM_SPEED;
-      else
-      speedR=MAXIMUM_SPEED;      
-    }
- 
-    if(fabs(speedL)<MINIMUM_SPEED)
-    {if(speedL<0)
-      speedL=-MINIMUM_SPEED;
-      else
-      speedL=MINIMUM_SPEED;
-    }
-    else if(fabs(speedL)>MAXIMUM_SPEED)
-    {
-      if(speedL<0)
-      speedL=-MAXIMUM_SPEED;
-      else
-      speedL=MAXIMUM_SPEED;
+    if(speedL != 0){
+      if(fabs(speedL)<MINIMUM_SPEED)
+      {if(speedL<0)
+        speedL=-MINIMUM_SPEED;
+        else
+        speedL=MINIMUM_SPEED;
+      }
+      else if(fabs(speedL)>MAXIMUM_SPEED)
+      {
+        if(speedL<0)
+        speedL=-MAXIMUM_SPEED;
+        else
+        speedL=MAXIMUM_SPEED;
+      }
     }
     // motorR.doneMove = 0;
     // motorL.doneMove = 0;
